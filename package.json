@@ -1,10 +1,10 @@
 {
 	"name": "mono-debug",
 	"displayName": "Mono Debug",
-	"version": "0.15.5",
+	"version": "0.15.7",
 	"publisher": "ms-vscode",
 	"description": "Visual Studio Code debugger extension for Mono",
-	"icon": "images/mono-debug-icon.svg",
+	"icon": "images/mono-debug-icon.png",
 	"categories": [
 		"Debuggers"
 	],
@@ -17,8 +17,8 @@
 		"prepublish": "make build",
 		"vscode:prepublish": "make build",
 		"compile": "make build",
-		"watch": "node ./node_modules/typescript/bin/tsc -w -p ./src/typescript",
-		"test": "make tests; node ./node_modules/mocha/bin/mocha --timeout 10000 -u tdd ./out/tests",
+		"watch": "tsc -w -p ./src/typescript",
+		"test": "make tests; mocha --timeout 10000 -u tdd ./out/tests",
 		"postinstall": "node ./node_modules/vscode/bin/install"
 	},
 	"engines": {
@@ -26,7 +26,7 @@
 		"node": "^6.3.0"
 	},
 	"dependencies": {
-		"vscode-debugprotocol": "^1.17.0",
+		"vscode-debugprotocol": "^1.20.0",
 		"vscode-nls": "^2.0.2"
 	},
 	"repository": {
@@ -43,8 +43,7 @@
 		"@types/node": "^6.0.39",
 		"mocha": "^2.4.5",
 		"typescript": "^2.0.3",
-		"vscode-debugprotocol": "^1.17.0",
-		"vscode-debugadapter-testsupport": "^1.17.0",
+		"vscode-debugadapter-testsupport": "^1.20.0",
 		"vsce": "^1.20.0",
 		"vscode": "^1.0.3",
 		"vscode-nls-dev": "^2.0.1"
@@ -127,12 +126,7 @@
 					"type": "mono",
 					"request": "launch",
 					"program": "${workspaceRoot}/program.exe",
-					"args": [],
-					"cwd": "${workspaceRoot}",
-					"preLaunchTask": "",
-					"runtimeExecutable": null,
-					"env": { },
-					"externalConsole": false
+					"cwd": "${workspaceRoot}"
 				},
 				{
 					"name": "%mono.attach.config.name%",
