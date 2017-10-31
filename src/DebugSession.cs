@@ -12,7 +12,8 @@ namespace VSCodeDebug
 {
 	// ---- Types -------------------------------------------------------------------------
 
-	public class Message {
+	public class Message
+	{
 		public int id { get; }
 		public string format { get; }
 		public dynamic variables { get; }
@@ -35,24 +36,18 @@ namespace VSCodeDebug
 		public int line { get; }
 		public int column { get; }
 		public string name { get; }
-        public string presentationHint { get; }
+		public string presentationHint { get; }
 
-        public StackFrame(int id, string name, Source source, int line, int column) {
+		public StackFrame(int id, string name, Source source, int line, int column, string hint) {
 			this.id = id;
 			this.name = name;
 			this.source = source;
 
-            // These should NEVER be negative
-            this.line = Math.Max(0,line);
-            this.column = Math.Max(0,column);
+			// These should NEVER be negative
+			this.line = Math.Max(0, line);
+			this.column = Math.Max(0, column);
 
-            // issue #21 - Don't provide source object when it doesn't make sense
-            if (this.line==0 || this.source==null || string.IsNullOrEmpty(this.source.name) || string.IsNullOrEmpty(this.source.path)) {
-                this.presentationHint = "label";
-                this.source = null;
-            } else {
-                this.presentationHint = "normal";
-            }
+			this.presentationHint = hint;
 		}
 	}
 
@@ -93,8 +88,7 @@ namespace VSCodeDebug
 			this.id = id;
 			if (name == null || name.Length == 0) {
 				this.name = string.Format("Thread #{0}", id);
-			}
-			else {
+			} else {
 				this.name = name;
 			}
 		}
@@ -105,26 +99,15 @@ namespace VSCodeDebug
 		public string name { get; }
 		public string path { get; }
 		public int sourceReference { get; }
+		public string presentationHint { get; }
 
-		private Source(string name, string path, int sourceReference = 0) {
+		public Source(string name, string path, int sourceReference, string hint) {
 			this.name = name;
 			this.path = path;
 			this.sourceReference = sourceReference;
+			this.presentationHint = hint;
 		}
-
-		private Source(string path, int sourceReference = 0) {
-			this.name = Path.GetFileName(path);
-			this.path = path;
-			this.sourceReference = sourceReference;
-		}
-
-        public static Source Create(string name, string path, int sourceReference = 0) {
-            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(path))
-                return null;
-
-            return new Source(name, path, sourceReference);
-        }
-    }
+	}
 
 	public class Breakpoint
 	{
@@ -208,12 +191,11 @@ namespace VSCodeDebug
 	public class StackTraceResponseBody : ResponseBody
 	{
 		public StackFrame[] stackFrames { get; }
+		public int totalFrames { get; }
 
-		public StackTraceResponseBody(List<StackFrame> frames = null) {
-			if (frames == null)
-				stackFrames = new StackFrame[0];
-			else
-				stackFrames = frames.ToArray<StackFrame>();
+		public StackTraceResponseBody(List<StackFrame> frames, int total) {
+			stackFrames = frames.ToArray<StackFrame>();
+			totalFrames = total;
 		}
 	}
 
@@ -221,11 +203,8 @@ namespace VSCodeDebug
 	{
 		public Scope[] scopes { get; }
 
-		public ScopesResponseBody(List<Scope> scps = null) {
-			if (scps == null)
-				scopes = new Scope[0];
-			else
-				scopes = scps.ToArray<Scope>();
+		public ScopesResponseBody(List<Scope> scps) {
+			scopes = scps.ToArray<Scope>();
 		}
 	}
 
@@ -233,11 +212,8 @@ namespace VSCodeDebug
 	{
 		public Variable[] variables { get; }
 
-		public VariablesResponseBody(List<Variable> vars = null) {
-			if (vars == null)
-				variables = new Variable[0];
-			else
-				variables = vars.ToArray<Variable>();
+		public VariablesResponseBody(List<Variable> vars) {
+			variables = vars.ToArray<Variable>();
 		}
 	}
 
@@ -245,11 +221,8 @@ namespace VSCodeDebug
 	{
 		public Thread[] threads { get; }
 
-		public ThreadsResponseBody(List<Thread> vars = null) {
-			if (vars == null)
-				threads = new Thread[0];
-			else
-				threads = vars.ToArray<Thread>();
+		public ThreadsResponseBody(List<Thread> ths) {
+			threads = ths.ToArray<Thread>();
 		}
 	}
 
@@ -268,7 +241,7 @@ namespace VSCodeDebug
 	{
 		public Breakpoint[] breakpoints { get; }
 
-		public SetBreakpointsResponseBody(List<Breakpoint> bpts = null) {
+			public SetBreakpointsResponseBody(List<Breakpoint> bpts = null) {
 			if (bpts == null)
 				breakpoints = new Breakpoint[0];
 			else
@@ -280,16 +253,12 @@ namespace VSCodeDebug
 
 	public abstract class DebugSession : ProtocolServer
 	{
-		private bool _debuggerLinesStartAt1;
-		private bool _debuggerPathsAreURI;
 		private bool _clientLinesStartAt1 = true;
 		private bool _clientPathsAreURI = true;
 
 
-		public DebugSession(bool debuggerLinesStartAt1, bool debuggerPathsAreURI = false)
+		public DebugSession()
 		{
-			_debuggerLinesStartAt1 = debuggerLinesStartAt1;
-			_debuggerPathsAreURI = debuggerPathsAreURI;
 		}
 
 		public void SendResponse(Response response, dynamic body = null)
@@ -454,10 +423,7 @@ namespace VSCodeDebug
 
 		public abstract void Variables(Response response, dynamic arguments);
 
-		public virtual void Source(Response response, dynamic arguments)
-		{
-			SendErrorResponse(response, 1020, "Source not supported");
-		}
+		public abstract void Source(Response response, dynamic arguments);
 
 		public abstract void Threads(Response response, dynamic arguments);
 
@@ -467,48 +433,27 @@ namespace VSCodeDebug
 
 		protected int ConvertDebuggerLineToClient(int line)
 		{
-			if (_debuggerLinesStartAt1) {
-				return _clientLinesStartAt1 ? line : line - 1;
-			}
-			else {
-				return _clientLinesStartAt1 ? line + 1 : line;
-			}
+			return _clientLinesStartAt1 ? line : line - 1;
 		}
 
 		protected int ConvertClientLineToDebugger(int line)
 		{
-			if (_debuggerLinesStartAt1) {
-				return _clientLinesStartAt1 ? line : line + 1;
-			}
-			else {
-				return _clientLinesStartAt1 ? line - 1 : line;
-			}
+			return _clientLinesStartAt1 ? line : line + 1;
 		}
 
 		protected string ConvertDebuggerPathToClient(string path)
 		{
-			if (_debuggerPathsAreURI) {
-				if (_clientPathsAreURI) {
-					return path;
+			if (_clientPathsAreURI) {
+				try {
+					var uri = new System.Uri(path);
+					return uri.AbsoluteUri;
 				}
-				else {
-					Uri uri = new Uri(path);
-					return uri.LocalPath;
+				catch {
+					return null;
 				}
 			}
 			else {
-				if (_clientPathsAreURI) {
-					try {
-						var uri = new System.Uri(path);
-						return uri.AbsoluteUri;
-					}
-					catch {
-						return null;
-					}
-				}
-				else {
-					return path;
-				}
+				return path;
 			}
 		}
 
@@ -518,27 +463,16 @@ namespace VSCodeDebug
 				return null;
 			}
 
-			if (_debuggerPathsAreURI) {
-				if (_clientPathsAreURI) {
-					return clientPath;
+			if (_clientPathsAreURI) {
+				if (Uri.IsWellFormedUriString(clientPath, UriKind.Absolute)) {
+					Uri uri = new Uri(clientPath);
+					return uri.LocalPath;
 				}
-				else {
-					var uri = new System.Uri(clientPath);
-					return uri.AbsoluteUri;
-				}
+				Program.Log("path not well formed: '{0}'", clientPath);
+				return null;
 			}
 			else {
-				if (_clientPathsAreURI) {
-					if (Uri.IsWellFormedUriString(clientPath, UriKind.Absolute)) {
-						Uri uri = new Uri(clientPath);
-						return uri.LocalPath;
-					}
-					Program.Log("path not well formed: '{0}'", clientPath);
-					return null;
-				}
-				else {
-					return clientPath;
-				}
+				return clientPath;
 			}
 		}
 	}

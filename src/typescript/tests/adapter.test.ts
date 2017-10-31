@@ -97,7 +97,7 @@ suite('Node Debug Adapter', () => {
 
 		const PROGRAM = Path.join(DATA_ROOT, 'simple/Program.exe');
 		const SOURCE = Path.join(DATA_ROOT, 'simple/Program.cs');
-		const BREAKPOINT_LINE = 10;
+		const BREAKPOINT_LINE = 13;
 
 		test('should stop on a breakpoint', () => {
 			return dc.hitBreakpoint({ program: PROGRAM }, { path: SOURCE, line: BREAKPOINT_LINE } );
@@ -115,6 +115,17 @@ suite('Node Debug Adapter', () => {
 				dc.assertOutput('stdout', "Hello stdout 0\nHello stdout 1\nHello stdout 2\n"),
 				dc.assertOutput('stderr', "Hello stderr 0\nHello stderr 1\nHello stderr 2\n")
 			]);
+		});
+	});
+
+	suite('FSharp Tests', () => {
+
+		const PROGRAM = Path.join(DATA_ROOT, 'fsharp/Program.exe');
+		const SOURCE = Path.join(DATA_ROOT, 'fsharp/Program.fs');
+		const BREAKPOINT_LINE = 8;
+
+		test('should stop on a breakpoint in an fsharp program', () => {
+			return dc.hitBreakpoint({ program: PROGRAM }, { path: SOURCE, line: BREAKPOINT_LINE } );
 		});
 	});
 });
