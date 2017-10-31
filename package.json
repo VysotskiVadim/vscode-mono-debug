@@ -148,6 +148,14 @@
 							"type": "string",
 							"description": "%mono.launch.packageName.description%"
 						},
+						"ipaPath": {
+							"type": "string",
+							"description": "path to ios app"
+						},
+						"deviceUDID": {
+							"type": "string",
+							"description": "debug device udid"
+						},
 						"args": {
 							"type": "array",
 							"description": "%mono.launch.args.description%",

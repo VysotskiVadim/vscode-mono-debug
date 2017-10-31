@@ -188,6 +188,9 @@ namespace VSCodeDebug
 			{
 				LaunchXamarinAndroid(response, args);
 			}
+			if (args.ipaPath != null) {
+				LaunchXamarinIosSimulator(response, args);
+			}
 			else
 			{
 				LaunchMono(response, args);
@@ -465,6 +468,38 @@ namespace VSCodeDebug
 			SendResponse(response);
 		}
 
+		public void LaunchXamarinIosSimulator(Response response, dynamic args)
+		{
+			_attachMode = true;
+
+			SetExceptionBreakpoints(args.__exceptionOptions);
+
+			var ipaPath = getString(args, "ipaPath", null);
+			if (ipaPath == null) {
+				SendErrorResponse(response, 3008, "Property 'ipaPath' is missing.");
+				return;
+			}
+
+			var port = 10006;
+			var console = RunProcess("mtouch", $"--sdk=11.0 -launchsim=\"{ipaPath}\" --device=\":v2:runtime=com.apple.CoreSimulator.SimRuntime.iOS-11-0,devicetype=com.apple.CoreSimulator.SimDeviceType.iPhone-6\" --stdout=output");
+			RunProcess("iproxy", $"{port} 34454 DA90A63D-F8ED-4FE0-A521-A12798F07AAB");
+			System.Threading.Thread.Sleep(6000);
+			lock (_lock) {
+
+				_debuggeeKilled = false;
+				var args0 = new XamarinDebuggerArgs(port, console) {
+					MaxConnectionAttempts = MAX_CONNECTION_ATTEMPTS,
+					TimeBetweenConnectionAttempts = CONNECTION_ATTEMPT_INTERVAL
+				};
+
+				_session.Run(new Mono.Debugging.Soft.SoftDebuggerStartInfo(args0), _debuggerSessionOptions);
+
+				_debuggeeExecuting = true;
+			}
+
+			SendResponse(response);
+		}
+
 		private string RunAdbForResult(string args)
 		{
 			var adbProcessInfo = new ProcessStartInfo 
@@ -478,6 +513,25 @@ namespace VSCodeDebug
 			var result = adbProcess.StandardOutput.ReadToEnd();
 			adbProcess.WaitForExit();
 			return result;
+		}
+
+		private StreamReader RunProcess(string file, string args)
+		{
+			var processInfo = new ProcessStartInfo 
+			{
+				FileName = file,
+				Arguments = args,
+				RedirectStandardOutput = true,
+				UseShellExecute = false
+			};
+			var process = Process.Start(processInfo);
+			process.ErrorDataReceived += (o, e) => {
+				Console.WriteLine(e.Data);
+			};
+			process.OutputDataReceived += (o, e) => {
+				Console.WriteLine(e.Data);
+			};
+			return process.StandardOutput;
 		}
 
 		private StreamReader RunAdb(string args)
