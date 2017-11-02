@@ -49,6 +49,8 @@
     <Compile Include="src\XamarinDebuggerArgs.cs" />
     <Compile Include="src\XamarinTcpConnection.cs" />
     <Compile Include="src\XamarinVirtualMachineManager.cs" />
+    <Compile Include="src\AdapterConnectionDialog.cs" />
+    <Compile Include="src\XamarinDebuggerSession.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

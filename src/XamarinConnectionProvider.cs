@@ -38,7 +38,7 @@ namespace VSCodeDebug
 
         public bool ShouldRetryConnection(Exception ex)
         {
-            return false;
+            return true;
         }
     }
 }
