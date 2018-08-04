@@ -6,7 +6,7 @@ os:
 env:
   global:
     - ANDROID_COMPONENTS=build-tools-27.0.3,android-24,sys-img-armeabi-v7a-android-17
-    - ANDROID_LICENSES=android-sdk-license-c81a61d9
+    - ANDROID_LICENSES=android-sdk-license-2742d1c5
 
 git:
   submodules: false
