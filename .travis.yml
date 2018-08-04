@@ -5,6 +5,8 @@ os:
 
 sudo: required
 
+dist: precise
+
 android:
   components:
     - build-tools-27.0.3
