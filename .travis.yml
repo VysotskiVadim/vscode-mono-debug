@@ -3,10 +3,11 @@ language: android
 os:
   - osx
   sudo: required
-  android:
-    components:
-      - tools
-      - platform-tools
+  
+android:
+  components:
+    - tools
+    - platform-tools
 
 git:
   submodules: false
