@@ -59,7 +59,7 @@ namespace VSCodeDebug
 				EvaluationOptions = EvaluationOptions.DefaultOptions
 			};
 
-			_session = new Mono.Debugging.Soft.SoftDebuggerSession();
+			_session = new XamarinDebuggerSession();
 			_session.Breakpoints = new BreakpointStore();
 
 			_breakpoints = new SortedDictionary<long, BreakEvent>();
@@ -446,7 +446,6 @@ namespace VSCodeDebug
 			RunAdbForResult("shell setprop debug.mono.connect port=10000,timeout=2000000000");
 			RunAdbForResult($"shell am force-stop {packageName}");
 			RunAdbForResult($"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1");
-			System.Threading.Thread.Sleep(500);
 
 			lock (_lock) {
 
@@ -457,12 +456,14 @@ namespace VSCodeDebug
 					TimeBetweenConnectionAttempts = CONNECTION_ATTEMPT_INTERVAL
 				};
 
+				_session.ConnectionDialogCreator = () => new AdapterConnectionDialog(() => {
+					_session.ConnectionDialogCreator = null;
+					_debuggeeExecuting = true;
+					SendResponse(response);
+				});
+
 				_session.Run(new Mono.Debugging.Soft.SoftDebuggerStartInfo(args0), _debuggerSessionOptions);
-
-				_debuggeeExecuting = true;
 			}
-
-			SendResponse(response);
 		}
 
 		private string RunAdbForResult(string args)
@@ -477,6 +478,7 @@ namespace VSCodeDebug
 			var adbProcess = Process.Start(adbProcessInfo);
 			var result = adbProcess.StandardOutput.ReadToEnd();
 			adbProcess.WaitForExit();
+			Console.WriteLine(result);
 			return result;
 		}
 
