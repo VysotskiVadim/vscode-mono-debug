@@ -2,8 +2,9 @@ language: android
 
 os:
   - osx
-  sudo: required
-  
+
+sudo: required
+
 android:
   components:
     - tools
