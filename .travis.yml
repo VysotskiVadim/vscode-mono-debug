@@ -3,14 +3,10 @@ language: android
 os:
   - osx
 
-sudo: required
-
-dist: precise
-
-android:
-  components:
-    - build-tools-27.0.3
-    - android-26
+env:
+  global:
+    - ANDROID_COMPONENTS=build-tools-27.0.3,android-24
+    - ANDROID_LICENSES=android-sdk-license-c81a61d9
 
 git:
   submodules: false
@@ -25,6 +21,8 @@ before_install:
   - nvm use 6.5
 
 install:
+  - curl -L https://raw.github.com/embarkmobile/android-sdk-installer/version-2/android-sdk-installer | bash /dev/stdin --install=$ANDROID_COMPONENTS --accept=$ANDROID_LICENSES
+  - source ~/.android-sdk-installer/env
   - wget "https://download.mono-project.com/archive/5.8.1/macos-10-universal/MonoFramework-MDK-5.8.1.0.macos10.xamarin.universal.pkg"
   - sudo installer -pkg "MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.universal.pkg" -target /
   - wget "https://bosstoragemirror.azureedge.net/wrench/monodroid-mavericks-d15-6/a7/a7829590274ba0aad0e7d2d0dcbcb80d63c4b9e4/xamarin.android-8.2.0-16.pkg"
