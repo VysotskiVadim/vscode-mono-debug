@@ -30,6 +30,7 @@ tests:
 	cd testdata/output; make
 	cd testdata/simple_break; make
 	cd testdata/fsharp; make
+	cd testdata/xamarin_android; make
 
 clean:
 	git clean -xfd
