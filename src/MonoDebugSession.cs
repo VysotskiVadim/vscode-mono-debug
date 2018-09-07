@@ -456,13 +456,9 @@ namespace VSCodeDebug
 					TimeBetweenConnectionAttempts = CONNECTION_ATTEMPT_INTERVAL
 				};
 
-				_session.ConnectionDialogCreator = () => new AdapterConnectionDialog(() => {
-					_session.ConnectionDialogCreator = null;
-					_debuggeeExecuting = true;
-					SendResponse(response);
-				});
-
+				_debuggeeExecuting = true;
 				_session.Run(new Mono.Debugging.Soft.SoftDebuggerStartInfo(args0), _debuggerSessionOptions);
+				Program.Log("connection completed");
 			}
 		}
 
@@ -478,7 +474,7 @@ namespace VSCodeDebug
 			var adbProcess = Process.Start(adbProcessInfo);
 			var result = adbProcess.StandardOutput.ReadToEnd();
 			adbProcess.WaitForExit();
-			Console.WriteLine(result);
+			Program.Log("adb {0} output: {1}", args, result);
 			return result;
 		}
 
@@ -493,10 +489,10 @@ namespace VSCodeDebug
 			};
 			var adbProcess = Process.Start(adbProcessInfo);
 			adbProcess.ErrorDataReceived += (o, e) => {
-				Console.WriteLine(e.Data);
+				Program.Log("adb {0} error output: {1}", args,  e.Data);
 			};
 			adbProcess.OutputDataReceived += (o, e) => {
-				Console.WriteLine(e.Data);
+				Program.Log("adb {0} output {1}", args, e.Data);
 			};
 			return adbProcess.StandardOutput;
 		}

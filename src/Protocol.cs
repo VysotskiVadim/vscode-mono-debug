@@ -126,7 +126,7 @@ namespace VSCodeDebug
 			_pendingRequests = new Dictionary<int, TaskCompletionSource<Response>>();
 		}
 
-		public async Task Start(Stream inputStream, Stream outputStream)
+		public void Start(Stream inputStream, Stream outputStream)
 		{
 			_outputStream = outputStream;
 
@@ -134,13 +134,14 @@ namespace VSCodeDebug
 
 			_stopRequested = false;
 			while (!_stopRequested) {
-				var read = await inputStream.ReadAsync(buffer, 0, buffer.Length);
+				Program.Log("Waiting for input");
+				var read = inputStream.Read(buffer, 0, buffer.Length);
 
 				if (read == 0) {
 					// end of stream
 					break;
 				}
-
+				Program.Log(Encoding.GetString(buffer).Substring(0, read));
 				if (read > 0) {
 					_rawData.Append(buffer, read);
 					ProcessData();
@@ -224,7 +225,7 @@ namespace VSCodeDebug
 
 						var response = new Response(request);
 						DispatchRequest(request.command, request.arguments, response);
-						SendMessage(response);
+						//SendMessage(response);
 					}
 					break;
 
@@ -263,8 +264,8 @@ namespace VSCodeDebug
 				_outputStream.Write(data, 0, data.Length);
 				_outputStream.Flush();
 			}
-			catch (Exception) {
-				// ignore
+			catch (Exception e) {
+				Program.Log("Exception during sending message: {0}", e);
 			}
 		}
 
