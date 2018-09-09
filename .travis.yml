@@ -3,11 +3,6 @@ language: android
 os:
   - osx
 
-env:
-  global:
-    - ANDROID_COMPONENTS=build-tools-27.0.3,android-24,sys-img-armeabi-v7a-android-27
-    - ANDROID_LICENSES=android-sdk-license-2742d1c5
-
 git:
   submodules: false
 
@@ -21,18 +16,32 @@ before_install:
   - nvm use 6.5
 
 install:
+  # Install base Android SDK and components
+  - export ANDROID_COMPONENTS=build-tools-27.0.3,android-27,sys-img-x86_64-android-27
+  - export ANDROID_LICENSES=android-sdk-license-2742d1c5
   - curl -L https://raw.github.com/embarkmobile/android-sdk-installer/version-2/android-sdk-installer | bash /dev/stdin --install=$ANDROID_COMPONENTS --accept=$ANDROID_LICENSES
   - source ~/.android-sdk-installer/env
-  - echo no | android create avd --force -n test -t android-27 --abi armeabi-v7a
+  - export ANDROID_SDK_ROOT=~/.android-sdk-installer/android-sdk-macosx
+  # Create and start emulator
+  - android list target
+  - echo no | android create avd --force -n test -t android-27
   - emulator -avd test -no-skin -no-audio -no-window &
-  - wait_for_emulator
+  # Mono 
   - wget "https://download.mono-project.com/archive/5.8.1/macos-10-universal/MonoFramework-MDK-5.8.1.0.macos10.xamarin.universal.pkg"
   - sudo installer -pkg "MonoFramework-MDK-5.8.1.0.macos10.xamarin.universal.pkg" -target /
+  # Xamarin Android
   - wget "https://bosstoragemirror.azureedge.net/wrench/monodroid-mavericks-d15-6/a7/a7829590274ba0aad0e7d2d0dcbcb80d63c4b9e4/xamarin.android-8.2.0-16.pkg"
   - sudo installer -pkg "xamarin.android-8.2.0-16.pkg" -target /
+  #nuget
+  - sudo curl -o /usr/local/bin/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
 
-  - nuget restore mono-debug.sln
+  - mono /usr/local/bin/nuget.exe restore mono-debug.sln
   - npm install
 
+before_script:
+    # Make sure the emulator has started before running tests
+    - wait_for_emulator
+
 script:
+  - make debug
   - npm test
