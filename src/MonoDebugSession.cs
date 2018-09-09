@@ -459,6 +459,7 @@ namespace VSCodeDebug
 				_debuggeeExecuting = true;
 				_session.Run(new Mono.Debugging.Soft.SoftDebuggerStartInfo(args0), _debuggerSessionOptions);
 				Program.Log("connection completed");
+				SendResponse(response);
 			}
 		}
 
@@ -469,11 +470,13 @@ namespace VSCodeDebug
 				FileName = "adb",
 				Arguments = args,
 				RedirectStandardOutput = true,
+				RedirectStandardInput = true,
 				UseShellExecute = false
 			};
 			var adbProcess = Process.Start(adbProcessInfo);
 			var result = adbProcess.StandardOutput.ReadToEnd();
 			adbProcess.WaitForExit();
+			adbProcess.Close();
 			Program.Log("adb {0} output: {1}", args, result);
 			return result;
 		}
@@ -485,6 +488,7 @@ namespace VSCodeDebug
 				FileName = "adb",
 				Arguments = args,
 				RedirectStandardOutput = true,
+				RedirectStandardInput = true,
 				UseShellExecute = false
 			};
 			var adbProcess = Process.Start(adbProcessInfo);
