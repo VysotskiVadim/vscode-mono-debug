@@ -1,7 +1,7 @@
 language: android
 
-os:
-  - osx
+os: osx
+osx_image: xcode9.4
 
 git:
   submodules: false
