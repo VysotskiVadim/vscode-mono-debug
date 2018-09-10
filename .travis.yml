@@ -8,12 +8,12 @@ git:
 
 
 before_install:
-  # - git submodule init
-  # - git submodule update
-  # - git clone https://github.com/creationix/nvm.git ./.nvm
-  # - source ./.nvm/nvm.sh
-  # - nvm install 6.5
-  # - nvm use 6.5
+  - git submodule init
+  - git submodule update
+  - git clone https://github.com/creationix/nvm.git ./.nvm
+  - source ./.nvm/nvm.sh
+  - nvm install 6.5
+  - nvm use 6.5
 
 install:
   # Install base Android SDK and components
@@ -29,22 +29,22 @@ install:
   - ls -la ~/.android-sdk-installer/android-sdk-macosx/system-images/android-24/default
   - ls -la ~/.android-sdk-installer/android-sdk-macosx/system-images/android-24/default/armeabi-v7a
   - echo no | android -v create avd --force -n test -t android-24 --abi armeabi-v7a
-  - emulator -avd test -no-skin -no-audio -no-window -gpu off -verbose 
-  # # Mono 
-  # - wget "https://download.mono-project.com/archive/5.8.1/macos-10-universal/MonoFramework-MDK-5.8.1.0.macos10.xamarin.universal.pkg"
-  # - sudo installer -pkg "MonoFramework-MDK-5.8.1.0.macos10.xamarin.universal.pkg" -target /
-  # - export PATH=/Library/Frameworks/Mono.framework/Versions/Current/bin/:/Library/Frameworks/Mono.framework/Versions/Current/Commands/:${PATH}
-  # # Xamarin Android
-  # - wget "https://bosstoragemirror.azureedge.net/wrench/monodroid-mavericks-d15-6/a7/a7829590274ba0aad0e7d2d0dcbcb80d63c4b9e4/xamarin.android-8.2.0-16.pkg"
-  # - sudo installer -pkg "xamarin.android-8.2.0-16.pkg" -target /
+  - emulator -avd test -no-skin -no-audio -no-window -gpu off & #-verbose 
+  # Mono 
+  - wget "https://download.mono-project.com/archive/5.8.1/macos-10-universal/MonoFramework-MDK-5.8.1.0.macos10.xamarin.universal.pkg"
+  - sudo installer -pkg "MonoFramework-MDK-5.8.1.0.macos10.xamarin.universal.pkg" -target /
+  - export PATH=/Library/Frameworks/Mono.framework/Versions/Current/bin/:/Library/Frameworks/Mono.framework/Versions/Current/Commands/:${PATH}
+  # Xamarin Android
+  - wget "https://bosstoragemirror.azureedge.net/wrench/monodroid-mavericks-d15-6/a7/a7829590274ba0aad0e7d2d0dcbcb80d63c4b9e4/xamarin.android-8.2.0-16.pkg"
+  - sudo installer -pkg "xamarin.android-8.2.0-16.pkg" -target /
 
-  # - nuget restore mono-debug.sln
-  # - npm install
+  - nuget restore mono-debug.sln
+  - npm install
 
 before_script:
     # Make sure the emulator has started before running tests
-#     - wait_for_emulator
+    - wait_for_emulator
 
-# script:
-#   - make debug
-#   - npm test
+script:
+  - make debug
+  - npm test
