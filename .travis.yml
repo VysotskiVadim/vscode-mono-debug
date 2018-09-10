@@ -17,14 +17,14 @@ before_install:
 
 install:
   # Install base Android SDK and components
-  - export ANDROID_COMPONENTS=build-tools-27.0.3,android-25,android-27,sys-img-armeabi-v7a-android-25
+  - export ANDROID_COMPONENTS=build-tools-27.0.3,android-21,android-27,sys-img-armeabi-v7a-android-21
   - export ANDROID_LICENSES=android-sdk-license-2742d1c5
   - curl -L https://raw.github.com/embarkmobile/android-sdk-installer/version-2/android-sdk-installer | bash /dev/stdin --install=$ANDROID_COMPONENTS --accept=$ANDROID_LICENSES
   - source ~/.android-sdk-installer/env
   - export ANDROID_SDK_ROOT=~/.android-sdk-installer/android-sdk-macosx
   # Create and start emulator
   - android list target
-  #- android list sdk --extended -a
+  - android list sdk --extended -a
   - ls -la ~/.android-sdk-installer/android-sdk-macosx/system-images/android-25
   - ls -la ~/.android-sdk-installer/android-sdk-macosx/system-images/android-25/default
   - ls -la ~/.android-sdk-installer/android-sdk-macosx/system-images/android-25/default/armeabi-v7a
