@@ -17,7 +17,7 @@ before_install:
 
 install:
   # Install base Android SDK and components
-  - export ANDROID_COMPONENTS=build-tools-27.0.3,android-21,android-27,sys-img-armeabi-v7a-android-21
+  - export ANDROID_COMPONENTS=build-tools-27.0.3,android-27,android-24,sys-img-armeabi-v7a-android-24
   - export ANDROID_LICENSES=android-sdk-license-2742d1c5
   - curl -L https://raw.github.com/embarkmobile/android-sdk-installer/version-2/android-sdk-installer | bash /dev/stdin --install=$ANDROID_COMPONENTS --accept=$ANDROID_LICENSES
   - source ~/.android-sdk-installer/env
@@ -25,10 +25,10 @@ install:
   # Create and start emulator
   - android list target
   - android list sdk --extended -a
-  - ls -la ~/.android-sdk-installer/android-sdk-macosx/system-images/android-25
-  - ls -la ~/.android-sdk-installer/android-sdk-macosx/system-images/android-25/default
-  - ls -la ~/.android-sdk-installer/android-sdk-macosx/system-images/android-25/default/armeabi-v7a
-  - echo no | android -v create avd --force -n test -t android-27 --abi armeabi-v7a
+  - ls -la ~/.android-sdk-installer/android-sdk-macosx/system-images/android-24
+  - ls -la ~/.android-sdk-installer/android-sdk-macosx/system-images/android-24/default
+  - ls -la ~/.android-sdk-installer/android-sdk-macosx/system-images/android-24/default/armeabi-v7a
+  - echo no | android -v create avd --force -n test -t android-24 --abi armeabi-v7a
   - emulator -avd test -no-skin -no-audio -no-window -gpu off -verbose 
   # # Mono 
   # - wget "https://download.mono-project.com/archive/5.8.1/macos-10-universal/MonoFramework-MDK-5.8.1.0.macos10.xamarin.universal.pkg"
