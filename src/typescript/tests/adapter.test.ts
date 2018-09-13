@@ -28,25 +28,25 @@ suite('Node Debug Adapter', () => {
 	});
 
 	teardown( () => {
-		return dc.stop()
-			.then(() => {
-				return new Promise((resolve, reject) => {
-					fs.readFile(Path.join(PROJECT_ROOT, 'proxy_log'), 'utf8', (err, data) => {
-						console.log('proxyLog:');
-						console.log(data)
-						resolve();
-					});
-				})
-			})
-			.catch((err) => {
-				return new Promise((resolve, reject) => {
-					fs.readFile(Path.join(PROJECT_ROOT, 'proxy_log'), 'utf8', (err, data) => {
-						console.log('proxyLog:');
-						console.log(data)
-						resolve();
-					});
+		return new Promise((resolve, reject) => {
+			fs.readFile(Path.join(PROJECT_ROOT, 'proxy_log'), 'utf8', (err, data) => {
+				console.log('proxyLog:');
+				console.log(data)
+				resolve();
+			});
+		})
+		.then(() => {
+			return new Promise((resolve, reject) => {
+				fs.readFile(Path.join(PROJECT_ROOT, 'xamarin-debug-log'), 'utf8', (err, data) => {
+					console.log('xamarin-debug-log:');
+					console.log(data)
+					resolve();
 				});
 			});
+		})
+		.then(() => {
+			return dc.stop();
+		});
 	});
 
 
