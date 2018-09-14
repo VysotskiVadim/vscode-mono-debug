@@ -13,9 +13,9 @@ namespace VSCodeDebug
 	{
 		const int DEFAULT_PORT = 4711;
 
-		private static bool trace_requests = true;
-		private static bool trace_responses = true;
-		static string LOG_FILE_PATH = "xamarin-debug-log";
+		private static bool trace_requests;
+		private static bool trace_responses;
+		static string LOG_FILE_PATH = null;
 
 		private static void Main(string[] argv)
 		{
@@ -47,8 +47,8 @@ namespace VSCodeDebug
 				}
 			}
 
-			if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("mono_debug_logfile")) == false) {
-				LOG_FILE_PATH = Environment.GetEnvironmentVariable("mono_debug_logfile");
+			if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("xamarin_debug_logfile")) == false) {
+				LOG_FILE_PATH = Environment.GetEnvironmentVariable("xamarin_debug_logfile");
 				trace_requests = true;
 				trace_responses = true;
 			}
@@ -117,8 +117,6 @@ namespace VSCodeDebug
 		private static void RunSession(Stream inputStream, Stream outputStream)
 		{
 			DebugSession debugSession = new MonoDebugSession();
-			debugSession.TRACE = true;
-			debugSession.TRACE_RESPONSE = true;
 			debugSession.Start(inputStream, outputStream);
 
 			if (logFile!=null)

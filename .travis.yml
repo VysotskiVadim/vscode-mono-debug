@@ -47,4 +47,5 @@ before_script:
 
 script:
   - make debug
+  - export xamarin_debug_logfile=xamarin-debug-log
   - npm test
