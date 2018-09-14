@@ -48,4 +48,5 @@ before_script:
 script:
   - make debug
   - export xamarin_debug_logfile=xamarin-debug-log
+  - export xamarin_debug_adapter_test_timeout=58000
   - npm test

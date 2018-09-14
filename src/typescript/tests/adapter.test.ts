@@ -9,9 +9,9 @@ import assert = require('assert');
 import * as Path from 'path';
 import * as fs from 'fs';
 import {DebugClient} from 'vscode-debugadapter-testsupport';
-import {DebugProtocol} from 'vscode-debugprotocol';
+import { isNumber } from 'util';
 
-suite('Node Debug Adapter', () => {
+suite('Xamarin Debug Adapter', () => {
 
 	const PROJECT_ROOT = Path.join(__dirname, '../../');
 	const DATA_ROOT = Path.join(PROJECT_ROOT, 'testdata/');
@@ -23,7 +23,10 @@ suite('Node Debug Adapter', () => {
 
 	setup( () => {
 		dc = new DebugClient('/bin/sh', DEBUG_ADAPTER, 'mono');
-		dc.defaultTimeout = 58000;
+		let timeOut = process.env.xamarin_debug_adapter_test_timeout;
+		if (isNumber(timeOut)) {
+			dc.defaultTimeout = Number(timeOut);
+		}
 		return dc.start();
 	});
 
