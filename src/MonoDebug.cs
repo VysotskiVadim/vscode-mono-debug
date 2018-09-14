@@ -78,8 +78,6 @@ namespace VSCodeDebug
 		{
 			try
 			{
-				//Console.Error.WriteLine(format, data);
-
 				if (LOG_FILE_PATH != null)
 				{
 					if (logFile == null)
