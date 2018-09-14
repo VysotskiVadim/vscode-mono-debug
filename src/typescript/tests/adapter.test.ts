@@ -23,7 +23,7 @@ suite('Node Debug Adapter', () => {
 
 	setup( () => {
 		dc = new DebugClient('/bin/sh', DEBUG_ADAPTER, 'mono');
-		dc.defaultTimeout = 28000;
+		dc.defaultTimeout = 58000;
 		return dc.start();
 	});
 
