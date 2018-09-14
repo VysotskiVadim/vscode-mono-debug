@@ -26,10 +26,6 @@ $MONO_DEBUG_DEBUG:
 	msbuild /p:Configuration=Debug mono-debug.sln
 
 tests:
-	cd testdata/simple; make
-	cd testdata/output; make
-	cd testdata/simple_break; make
-	cd testdata/fsharp; make
 	cd testdata/xamarin_android; make
 
 clean:

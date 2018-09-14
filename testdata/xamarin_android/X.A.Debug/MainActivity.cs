@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace X.A.Debug
 {
-    [Activity(Label = "X.A. Debug", MainLauncher = true, Icon = "@mipmap/icon")]
+    [Activity(Label = "X.A. Debug", MainLauncher = true)]
     public class MainActivity : Activity
     {
         protected override void OnCreate(Bundle savedInstanceState)

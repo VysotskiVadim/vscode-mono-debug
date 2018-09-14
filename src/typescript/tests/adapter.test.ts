@@ -49,18 +49,6 @@ suite('Node Debug Adapter', () => {
 		});
 	});
 
-
-	// suite('setBreakpoints mono', () => {
-
-	// 	const PROGRAM = Path.join(DATA_ROOT, 'simple/Program.exe');
-	// 	const SOURCE = Path.join(DATA_ROOT, 'simple/Program.cs');
-	// 	const BREAKPOINT_LINE = 13;
-
-	// 	test('should stop on a breakpoint', () => {
-	// 		return dc.hitBreakpoint({ program: PROGRAM }, { path: SOURCE, line: BREAKPOINT_LINE } );
-	// 	});
-	// });
-
 	suite('setBreakpoints android', () => {
 
 		const PROGRAM = 'com.xamarin.debugexample.x_a_debug';
