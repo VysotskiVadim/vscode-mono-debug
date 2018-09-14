@@ -6,6 +6,9 @@ osx_image: xcode9.3
 git:
   submodules: false
 
+env:
+  - xamarin_debug_logfile=xamarin-debug-log
+  - xamarin_debug_adapter_test_timeout=58000
 
 before_install:
   - git submodule init
@@ -47,6 +50,4 @@ before_script:
 
 script:
   - make debug
-  - export xamarin_debug_logfile=xamarin-debug-log
-  - export xamarin_debug_adapter_test_timeout=58000
   - npm test
