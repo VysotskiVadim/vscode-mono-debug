@@ -62,14 +62,36 @@ suite('Xamarin Debug Adapter', () => {
 		});
 	});
 
-	suite('setBreakpoints android', () => {
+	suite('debug android', () => {
 
-		const PROGRAM = 'com.xamarin.debugexample.x_a_debug';
-		const SOURCE = Path.join(DATA_ROOT, 'xamarin_android/X.A.Debug/MainActivity.cs');
-		const BREAKPOINT_LINE = 16;
-
-		test('should stop on a breakpoint', () => {
-			return dc.hitBreakpoint({ packageName: PROGRAM }, { path: SOURCE, line: BREAKPOINT_LINE } );
+		const PACKAGE = 'com.xamarin.debugexample.x_a_debug';
+		const XAMARIN_ANDROID_TEST_ROOT = Path.join(DATA_ROOT, 'xamarin_android', 'X.A.Debug');
+		
+		test('steps flow', () => {
+			const STEP_TEST_FUNCTION_DEFINITION_LINE = 8;
+			const CALL_OF_INNER_FUNCTION_LINE = 9;
+			const INNER_FUNCTION_DEFINITION_LINE = 12;
+			const LAST_LINE_OF_STEP_TEST_FUNCTION = 10;
+			const SOURCE = Path.join(XAMARIN_ANDROID_TEST_ROOT, 'StepsFlow.cs');
+			return dc
+				.hitBreakpoint({ packageName: PACKAGE }, { path: SOURCE, line: STEP_TEST_FUNCTION_DEFINITION_LINE } )
+				.then(() => Promise.all([
+					dc.assertStoppedLocation('step', { path: SOURCE, line: CALL_OF_INNER_FUNCTION_LINE}),
+					dc.nextRequest(null)
+				]))
+				.then(() => Promise.all([
+					dc.assertStoppedLocation('step', { path: SOURCE, line: INNER_FUNCTION_DEFINITION_LINE}),
+					dc.stepInRequest(null)
+				]))
+				.then(() => Promise.all([
+					dc.assertStoppedLocation('step', { path: SOURCE, line: CALL_OF_INNER_FUNCTION_LINE }),
+					dc.stepOutRequest(null)
+				]))
+				.then(() => dc.setBreakpointsRequest({ lines: [LAST_LINE_OF_STEP_TEST_FUNCTION], breakpoints: [{ line: LAST_LINE_OF_STEP_TEST_FUNCTION }], source: { path: SOURCE } } ))
+				.then(() => Promise.all([
+					dc.assertStoppedLocation('breakpoint', { path: SOURCE, line: LAST_LINE_OF_STEP_TEST_FUNCTION }),
+					dc.continueRequest(null)
+				]));
 		});
 	});
 
