@@ -23,9 +23,9 @@ suite('Xamarin Debug Adapter', () => {
 
 	setup( () => {
 		dc = new DebugClient('/bin/sh', DEBUG_ADAPTER, 'mono');
-		let timeOut = process.env.xamarin_debug_adapter_test_timeout;
-		if (isNumber(timeOut)) {
-			dc.defaultTimeout = Number(timeOut);
+		let timeOut = Number(process.env.xamarin_debug_adapter_test_timeout);
+		if (timeOut != Number.NaN) {
+			dc.defaultTimeout = timeOut;
 		}
 		return dc.start();
 	});
