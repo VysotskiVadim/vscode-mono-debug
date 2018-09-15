@@ -7,8 +7,7 @@ git:
   submodules: false
 
 env:
-  - xamarin_debug_logfile=xamarin-debug-log
-  - xamarin_debug_adapter_test_timeout=58000
+  - xamarin_debug_logfile=xamarin-debug-log xamarin_debug_adapter_test_timeout=58000
 
 before_install:
   - git submodule init
