@@ -11,9 +11,7 @@ namespace X.A.Debug
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            
-            var a = 15;
-            var b = a + 2;
+            StepsFlow.StepTestFunction();
         }
     }
 }
