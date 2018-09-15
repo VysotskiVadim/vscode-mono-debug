@@ -9,7 +9,6 @@ import assert = require('assert');
 import * as Path from 'path';
 import * as fs from 'fs';
 import {DebugClient} from 'vscode-debugadapter-testsupport';
-import { isNumber } from 'util';
 
 suite('Xamarin Debug Adapter', () => {
 
@@ -24,7 +23,7 @@ suite('Xamarin Debug Adapter', () => {
 	setup( () => {
 		dc = new DebugClient('/bin/sh', DEBUG_ADAPTER, 'mono');
 		let timeOut = Number(process.env.xamarin_debug_adapter_test_timeout);
-		if (timeOut != Number.NaN) {
+		if (!isNaN(timeOut)) {
 			dc.defaultTimeout = timeOut;
 		}
 		return dc.start();
