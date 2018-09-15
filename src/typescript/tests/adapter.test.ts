@@ -93,6 +93,38 @@ suite('Xamarin Debug Adapter', () => {
 					dc.continueRequest(null)
 				]));
 		});
+
+		test('variables flow', () => {
+			const SOURCE = Path.join(XAMARIN_ANDROID_TEST_ROOT, 'Variables.cs');
+			const TEST_FUNCTION_LAST_LINE = 13;
+
+			return Promise.all([
+				dc.waitForEvent('initialized').then(event => {
+					return dc.setBreakpointsRequest({
+						lines: [TEST_FUNCTION_LAST_LINE],
+						breakpoints: [{ line: TEST_FUNCTION_LAST_LINE }],
+						source: { path: SOURCE }
+					});
+				}),
+				dc.launch({ packageName: PACKAGE }),
+				dc.waitForEvent('stopped')
+					.then(event => dc.stackTraceRequest({ threadId: event.body.threadId}))
+					.then(stackTraceResponse => dc.scopesRequest({ frameId: stackTraceResponse.body.stackFrames[0].id }))
+					.then(scopeResponse => dc.variablesRequest({ variablesReference: scopeResponse.body.scopes[0].variablesReference }))
+					.then(variablesResponse => {
+						let variables = variablesResponse.body.variables;
+						assert.equal(variables.some(el => el.name == 'localIntVariable' && el.type == 'int' && el.value == '3'), true);
+						assert.equal(variables.some(el => el.name == 'localArrayVariable' && el.type == 'int[]'), true);
+						assert.equal(variables.some(el => el.name == 'this'), true);
+						var thisVariable = variables.filter(el => el.name == 'this')[0];
+						return dc.variablesRequest({ variablesReference: thisVariable.variablesReference });
+					})
+					.then(variablesResponse => {
+						let variables = variablesResponse.body.variables;
+						assert.equal(variables.some(el => el.name == 'testFieldString' && el.type == 'string' && el.value == '"test_string_value"'), true);						
+					})
+			]);
+		});
 	});
 
 });

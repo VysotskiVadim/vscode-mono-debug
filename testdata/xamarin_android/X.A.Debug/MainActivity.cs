@@ -12,6 +12,7 @@ namespace X.A.Debug
         {
             base.OnCreate(savedInstanceState);
             StepsFlow.StepTestFunction();
+            new Variables().VariablesFlow();
         }
     }
 }
