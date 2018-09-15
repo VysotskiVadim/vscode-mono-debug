@@ -13,3 +13,5 @@
 mono-debug.userprefs
 npm-debug.log
 .vs/mono-debug/v15/.suo
+proxy_log
+xamarin-debug-log

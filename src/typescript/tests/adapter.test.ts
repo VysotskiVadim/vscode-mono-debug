@@ -7,125 +7,71 @@
 
 import assert = require('assert');
 import * as Path from 'path';
+import * as fs from 'fs';
 import {DebugClient} from 'vscode-debugadapter-testsupport';
-import {DebugProtocol} from 'vscode-debugprotocol';
+import { isNumber } from 'util';
 
-suite('Node Debug Adapter', () => {
+suite('Xamarin Debug Adapter', () => {
 
 	const PROJECT_ROOT = Path.join(__dirname, '../../');
 	const DATA_ROOT = Path.join(PROJECT_ROOT, 'testdata/');
 
-	const DEBUG_ADAPTER = Path.join(PROJECT_ROOT, 'bin/Release/mono-debug.exe');
+	const DEBUG_ADAPTER = Path.join(PROJECT_ROOT, 'mono-debug-proxy.sh');
 
 
 	let dc: DebugClient;
 
 	setup( () => {
-		dc = new DebugClient('mono', DEBUG_ADAPTER, 'mono');
+		dc = new DebugClient('/bin/sh', DEBUG_ADAPTER, 'mono');
+		let timeOut = Number(process.env.xamarin_debug_adapter_test_timeout);
+		if (timeOut != Number.NaN) {
+			dc.defaultTimeout = timeOut;
+		}
 		return dc.start();
 	});
 
-	teardown( () => dc.stop() );
-
-
-	suite('basic', () => {
-
-		test('unknown request should produce error', done => {
-			dc.send('illegal_request').then(() => {
-				done(new Error("does not report error on unknown request"));
-			}).catch(() => {
-				done();
+	teardown(function() {
+		let testFailed = this.currentTest.state != "passed";
+		return new Promise((resolve, reject) => {
+			if (testFailed) {
+				fs.readFile(Path.join(PROJECT_ROOT, 'proxy_log'), 'utf8', (err, data) => {
+					console.log('proxyLog:');
+					console.log(data)
+					resolve();
+				});
+			}
+			else {
+				resolve();
+			}
+		})
+		.then(() => {
+			return new Promise((resolve, reject) => {
+				if (testFailed) {
+					fs.readFile(Path.join(PROJECT_ROOT, 'xamarin-debug-log'), 'utf8', (err, data) => {
+						console.log('xamarin-debug-log:');
+						console.log(data)
+						resolve();
+					});
+				}
+				else {
+					resolve();
+				}
 			});
+		})
+		.then(() => {
+			return dc.stop();
 		});
 	});
 
-	suite('initialize', () => {
+	suite('setBreakpoints android', () => {
 
-		test('should produce error for invalid \'pathFormat\'', done => {
-			dc.initializeRequest({
-				adapterID: 'mono',
-				linesStartAt1: true,
-				columnsStartAt1: true,
-				pathFormat: 'url'
-			}).then(response => {
-				done(new Error("does not report error on invalid 'pathFormat' attribute"));
-			}).catch(err => {
-				// error expected
-				done();
-			});
-		});
-	});
-
-	suite('launch', () => {
-
-		test('should run program to the end', () => {
-
-			const PROGRAM = Path.join(DATA_ROOT, 'simple/Program.exe');
-
-			return Promise.all([
-				dc.configurationSequence(),
-				dc.launch({ program: PROGRAM }),
-				dc.waitForEvent('terminated')
-			]);
-		});
-
-		test('should run program to the end (and not stop on Debugger.Break())', () => {
-
-			const PROGRAM = Path.join(DATA_ROOT, 'simple_break/Program.exe');
-
-			return Promise.all([
-				dc.configurationSequence(),
-				dc.launch({ program: PROGRAM, noDebug: true }),
-				dc.waitForEvent('terminated')
-			]);
-		});
-
-		test('should stop on debugger statement', () => {
-
-			const PROGRAM = Path.join(DATA_ROOT, 'simple_break/Program.exe');
-			const DEBUGGER_LINE = 11;
-
-			return Promise.all([
-				dc.configurationSequence(),
-				dc.launch({ program: PROGRAM }),
-				dc.assertStoppedLocation('step', {line:DEBUGGER_LINE})
-			]);
-		});
-	});
-
-	suite('setBreakpoints', () => {
-
-		const PROGRAM = Path.join(DATA_ROOT, 'simple/Program.exe');
-		const SOURCE = Path.join(DATA_ROOT, 'simple/Program.cs');
-		const BREAKPOINT_LINE = 13;
+		const PROGRAM = 'com.xamarin.debugexample.x_a_debug';
+		const SOURCE = Path.join(DATA_ROOT, 'xamarin_android/X.A.Debug/MainActivity.cs');
+		const BREAKPOINT_LINE = 16;
 
 		test('should stop on a breakpoint', () => {
-			return dc.hitBreakpoint({ program: PROGRAM }, { path: SOURCE, line: BREAKPOINT_LINE } );
+			return dc.hitBreakpoint({ packageName: PROGRAM }, { path: SOURCE, line: BREAKPOINT_LINE } );
 		});
 	});
 
-	suite('output events', () => {
-
-		const PROGRAM = Path.join(DATA_ROOT, 'output/Output.exe');
-
-		test('stdout and stderr events should be complete and in correct order', () => {
-			return Promise.all([
-				dc.configurationSequence(),
-				dc.launch({ program: PROGRAM }),
-				dc.assertOutput('stdout', "Hello stdout 0\nHello stdout 1\nHello stdout 2\n"),
-				dc.assertOutput('stderr', "Hello stderr 0\nHello stderr 1\nHello stderr 2\n")
-			]);
-		});
-	});
-
-	suite('FSharp Tests', () => {
-
-		const PROGRAM = Path.join(DATA_ROOT, 'fsharp/Program.exe');
-		const SOURCE = Path.join(DATA_ROOT, 'fsharp/Program.fs');
-		const BREAKPOINT_LINE = 8;
-
-		test('should stop on a breakpoint in an fsharp program', () => {
-			return dc.hitBreakpoint({ program: PROGRAM }, { path: SOURCE, line: BREAKPOINT_LINE } );
-		});
-	});
 });

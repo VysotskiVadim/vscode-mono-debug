@@ -47,8 +47,8 @@ namespace VSCodeDebug
 				}
 			}
 
-			if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("mono_debug_logfile")) == false) {
-				LOG_FILE_PATH = Environment.GetEnvironmentVariable("mono_debug_logfile");
+			if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("xamarin_debug_logfile")) == false) {
+				LOG_FILE_PATH = Environment.GetEnvironmentVariable("xamarin_debug_logfile");
 				trace_requests = true;
 				trace_responses = true;
 			}
@@ -78,17 +78,21 @@ namespace VSCodeDebug
 		{
 			try
 			{
-				Console.Error.WriteLine(format, data);
-
 				if (LOG_FILE_PATH != null)
 				{
 					if (logFile == null)
 					{
 						logFile = File.CreateText(LOG_FILE_PATH);
 					}
-
-					string msg = string.Format(format, data);
+					string msg = null;
+					if (data != null & data.Length > 0) {
+						msg = string.Format(format, data);
+					}
+					else {
+						msg = format;
+					}
 					logFile.WriteLine(string.Format("{0} {1}", DateTime.UtcNow.ToLongTimeString(), msg));
+					logFile.Flush();
 				}
 			}
 			catch (Exception ex)
@@ -111,9 +115,7 @@ namespace VSCodeDebug
 		private static void RunSession(Stream inputStream, Stream outputStream)
 		{
 			DebugSession debugSession = new MonoDebugSession();
-			debugSession.TRACE = trace_requests;
-			debugSession.TRACE_RESPONSE = trace_responses;
-			debugSession.Start(inputStream, outputStream).Wait();
+			debugSession.Start(inputStream, outputStream);
 
 			if (logFile!=null)
 			{
