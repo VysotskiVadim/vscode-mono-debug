@@ -26,11 +26,11 @@ before_install:
   - nvm install 6.5
   - nvm use 6.5
   # Install base Android SDK and components
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./macos-install-android-sdk.sh; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./ci-scripts/macos-install-android-sdk.sh; fi
   - echo no | android -v create avd --force -n test -t android-24 --abi armeabi-v7a
   - emulator -avd test -no-skin -no-audio -no-window -gpu off & #-verbose 
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./macos-install-xamarin.sh; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./ubuntu-install-xamarin.sh; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./ci-scripts/macos-install-xamarin.sh; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./ci-scripts/ubuntu-install-xamarin.sh; fi
 
 install:
   - nuget restore mono-debug.sln
