@@ -48,5 +48,5 @@ before_script:
     - wait_for_emulator
 
 script:
-  - make debug
+  - make build
   - npm test

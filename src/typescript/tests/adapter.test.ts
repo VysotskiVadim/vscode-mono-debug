@@ -14,14 +14,12 @@ suite('Xamarin Debug Adapter', () => {
 
 	const PROJECT_ROOT = Path.join(__dirname, '../../');
 	const DATA_ROOT = Path.join(PROJECT_ROOT, 'testdata/');
-
-	const DEBUG_ADAPTER = Path.join(PROJECT_ROOT, 'mono-debug-proxy.sh');
-
+	const DEBUG_ADAPTER = Path.join(PROJECT_ROOT, 'bin/Release/mono-debug.exe');
 
 	let dc: DebugClient;
 
 	setup( () => {
-		dc = new DebugClient('/bin/sh', DEBUG_ADAPTER, 'mono');
+		dc = new DebugClient('mono', DEBUG_ADAPTER, 'xamarin');
 		let timeOut = Number(process.env.xamarin_debug_adapter_test_timeout);
 		if (!isNaN(timeOut)) {
 			dc.defaultTimeout = timeOut;
@@ -33,8 +31,8 @@ suite('Xamarin Debug Adapter', () => {
 		let testFailed = this.currentTest.state != "passed";
 		return new Promise((resolve, reject) => {
 			if (testFailed) {
-				fs.readFile(Path.join(PROJECT_ROOT, 'proxy_log'), 'utf8', (err, data) => {
-					console.log('proxyLog:');
+				fs.readFile(Path.join(PROJECT_ROOT, 'xamarin-debug-log'), 'utf8', (err, data) => {
+					console.log('xamarin-debug-log:');
 					console.log(data)
 					resolve();
 				});
@@ -42,20 +40,6 @@ suite('Xamarin Debug Adapter', () => {
 			else {
 				resolve();
 			}
-		})
-		.then(() => {
-			return new Promise((resolve, reject) => {
-				if (testFailed) {
-					fs.readFile(Path.join(PROJECT_ROOT, 'xamarin-debug-log'), 'utf8', (err, data) => {
-						console.log('xamarin-debug-log:');
-						console.log(data)
-						resolve();
-					});
-				}
-				else {
-					resolve();
-				}
-			});
 		})
 		.then(() => {
 			return dc.stop();
