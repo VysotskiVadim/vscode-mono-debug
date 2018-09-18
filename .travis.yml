@@ -30,6 +30,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source ./ci-scripts/macos-install-android-sdk.sh; fi
   - echo no | android -v create avd --force -n test -t android-24 --abi armeabi-v7a
   - emulator -avd test -no-skin -no-audio -no-window -gpu off & #-verbose 
+  # Install Xamarin
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source ./ci-scripts/macos-install-xamarin.sh; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then source ./ci-scripts/ubuntu-install-xamarin.sh; fi
 
