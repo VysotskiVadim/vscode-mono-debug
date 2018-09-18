@@ -1,3 +1,7 @@
+env:
+  global:
+    - xamarin_debug_logfile=xamarin-debug-log xamarin_debug_adapter_test_timeout=58000
+
 matrix:
     include:
         - os: osx
@@ -15,9 +19,6 @@ matrix:
 
 git:
   depth: 3
-
-env:
-  - xamarin_debug_logfile=xamarin-debug-log xamarin_debug_adapter_test_timeout=58000
 
 before_install:
   # install nodejs
