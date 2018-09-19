@@ -1,22 +1,14 @@
 env:
   global:
-    - xamarin_debug_logfile=xamarin-debug-log xamarin_debug_adapter_test_timeout=58000
+    - xamarin_debug_logfile=xamarin-debug-log xamarin_debug_adapter_test_timeout=58000 ANDROID_COMPONENTS=build-tools-27.0.3,android-27,android-24,sys-img-armeabi-v7a-android-24 ANDROID_LICENSES=android-sdk-license-2742d1c5
 
 matrix:
     include:
         - os: osx
           osx_image: xcode9.3
-          env: ANDROID_COMPONENTS=build-tools-27.0.3,android-27,android-24,sys-img-armeabi-v7a-android-24 ANDROID_LICENSES=android-sdk-license-2742d1c5
         - os: linux
           dist: xenial
-          language: android
           sudo: required
-          android:
-            components:
-                - build-tools-27.0.3
-                - android-27
-                - android-24
-                - sys-img-armeabi-v7a-android-24
 
 git:
   depth: 3
@@ -28,7 +20,7 @@ before_install:
   - nvm install 6.5
   - nvm use 6.5
   # Install base Android SDK and components
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source ./ci-scripts/macos-install-android-sdk.sh; fi
+  - source ./ci-scripts/install-android-sdk.sh
   - echo no | android -v create avd --force -n test -t android-24 --abi armeabi-v7a
   - emulator -avd test -no-skin -no-audio -no-window -gpu off & #-verbose 
   # Install Xamarin
