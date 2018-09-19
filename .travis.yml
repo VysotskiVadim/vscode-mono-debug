@@ -1,51 +1,40 @@
-language: android
+env:
+  global:
+    - xamarin_debug_logfile=xamarin-debug-log xamarin_debug_adapter_test_timeout=58000 ANDROID_COMPONENTS=build-tools-27.0.3,android-27,android-24,sys-img-armeabi-v7a-android-24 ANDROID_LICENSES=android-sdk-license-2742d1c5
 
-os: osx
-osx_image: xcode9.3
+matrix:
+    include:
+        - os: osx
+          osx_image: xcode9.3
+        - os: linux
+          dist: xenial
+          sudo: required
 
 git:
-  submodules: false
-
-env:
-  - xamarin_debug_logfile=xamarin-debug-log xamarin_debug_adapter_test_timeout=58000
+  depth: 3
 
 before_install:
-  - git submodule init
-  - git submodule update
+  # install nodejs
   - git clone https://github.com/creationix/nvm.git ./.nvm
   - source ./.nvm/nvm.sh
   - nvm install 6.5
   - nvm use 6.5
-
-install:
   # Install base Android SDK and components
-  - export ANDROID_COMPONENTS=build-tools-27.0.3,android-27,android-24,sys-img-armeabi-v7a-android-24
-  - export ANDROID_LICENSES=android-sdk-license-2742d1c5
-  - curl -L https://raw.github.com/embarkmobile/android-sdk-installer/version-2/android-sdk-installer | bash /dev/stdin --install=$ANDROID_COMPONENTS --accept=$ANDROID_LICENSES
-  - source ~/.android-sdk-installer/env
-  - export ANDROID_SDK_ROOT=~/.android-sdk-installer/android-sdk-macosx
-  # Create and start emulator
-  - android list target
-  - android list sdk --extended -a
-  - ls -la ~/.android-sdk-installer/android-sdk-macosx/system-images/android-24
-  - ls -la ~/.android-sdk-installer/android-sdk-macosx/system-images/android-24/default
-  - ls -la ~/.android-sdk-installer/android-sdk-macosx/system-images/android-24/default/armeabi-v7a
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -qq libstdc++6:i386 lib32z1 expect; fi
+  - source ./ci-scripts/install-android-sdk.sh
   - echo no | android -v create avd --force -n test -t android-24 --abi armeabi-v7a
   - emulator -avd test -no-skin -no-audio -no-window -gpu off & #-verbose 
-  # Mono 
-  - wget "https://download.mono-project.com/archive/5.8.1/macos-10-universal/MonoFramework-MDK-5.8.1.0.macos10.xamarin.universal.pkg"
-  - sudo installer -pkg "MonoFramework-MDK-5.8.1.0.macos10.xamarin.universal.pkg" -target /
-  - export PATH=/Library/Frameworks/Mono.framework/Versions/Current/bin/:/Library/Frameworks/Mono.framework/Versions/Current/Commands/:${PATH}
-  # Xamarin Android
-  - wget "https://bosstoragemirror.azureedge.net/wrench/monodroid-mavericks-d15-6/a7/a7829590274ba0aad0e7d2d0dcbcb80d63c4b9e4/xamarin.android-8.2.0-16.pkg"
-  - sudo installer -pkg "xamarin.android-8.2.0-16.pkg" -target /
+  # Install Xamarin
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source ./ci-scripts/macos-install-xamarin.sh; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then source ./ci-scripts/ubuntu-install-xamarin.sh; fi
 
+install:
   - nuget restore mono-debug.sln
   - npm install
 
 before_script:
-    # Make sure the emulator has started before running tests
-    - wait_for_emulator
+  # Make sure the emulator has started before running tests
+  - wait_for_emulator
 
 script:
   - make build
