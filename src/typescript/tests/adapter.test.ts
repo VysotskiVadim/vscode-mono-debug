@@ -135,6 +135,13 @@ suite('Xamarin Debug Adapter', () => {
 				.then(launchRespose => assert.fail())
 				.catch(e => {})
 		);
+
+		test('run without wrong package name', 
+			() => dc.launch({packageName: "wrong"})
+				.then(launchRespose => assert.fail())
+				.catch(e => {})
+		);
+
 	});
 
 });
