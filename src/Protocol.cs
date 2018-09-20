@@ -134,14 +134,12 @@ namespace VSCodeDebug
 
 			_stopRequested = false;
 			while (!_stopRequested) {
-				Program.Log("Waiting for input");
 				var read = inputStream.Read(buffer, 0, buffer.Length);
 
 				if (read == 0) {
 					// end of stream
 					break;
 				}
-				Program.Log(Encoding.GetString(buffer).Substring(0, read));
 				if (read > 0) {
 					_rawData.Append(buffer, read);
 					ProcessData();
