@@ -14,5 +14,6 @@
 
 
 	"mono.launch.config.name": "Launch",
-	"mono.launch.packageName.description": "Android package name.",
+	"mono.launch.package.description": "Android package name.",
+	"mono.launch.intent.description": "Intent to start android aplication. It will be insterted to command adb shell am start {intent}"
 }

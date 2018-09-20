@@ -125,16 +125,21 @@
 					"name": "%mono.launch.config.name%",
 					"type": "xamarin",
 					"request": "launch",
-					"package": "com.your.app.package"
+					"package": "com.your.app.package",
+					"intent": ""
 				}
 			],
 			"configurationAttributes": {
 				"launch": {
 					"required": [],
 					"properties": {
-						"packageName":{
+						"package":{
 							"type": "string",
-							"description": "%mono.launch.packageName.description%"
+							"description": "%mono.launch.package.description%"
+						},
+						"intent":{
+							"type": "string",
+							"description": "%mono.launch.intent.description%"
 						}
 					}
 				}

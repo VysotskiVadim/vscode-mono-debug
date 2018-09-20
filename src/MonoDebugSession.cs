@@ -445,7 +445,14 @@ namespace VSCodeDebug
 			var port = int.Parse(forwardOutput);
 			RunAdbForResult("shell setprop debug.mono.connect port=10000,timeout=2000000000");
 			RunAdbForResult($"shell am force-stop {packageName}");
-			RunAdbForResult($"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1");
+
+			var intent = getString(args, "intent", null);
+			if (intent != null) {
+				RunAdbForResult($"shell am start {intent}");
+			}
+			else {
+				RunAdbForResult($"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1");
+			}
 
 			lock (_lock) {
 
