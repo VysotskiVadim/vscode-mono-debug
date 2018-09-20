@@ -109,6 +109,26 @@ suite('Xamarin Debug Adapter', () => {
 					})
 			]);
 		});
+
+		test('break on unhandled exceptions', () => {
+			const SOURCE = Path.join(XAMARIN_ANDROID_TEST_ROOT, 'UnhandledException.cs');
+			const LINE_WHERE_UNHANDLED_EXCEPTION_THROWN = 9;
+			return Promise.all([
+				dc.launch({ packageName: PACKAGE, intent: '-n com.xamarin.debugexample.x_a_debug/.test --ez unhandled_exception true' }),
+				dc.waitForEvent('stopped')
+					.then(event => {
+						assert.equal(event.body.reason, 'exception');
+						return dc.stackTraceRequest({ threadId: event.body.threadId });
+					})
+					.then(response => {
+						let frame = response.body.stackFrames.filter(
+							sf => sf.source != null && sf.source.path === SOURCE && sf.line === LINE_WHERE_UNHANDLED_EXCEPTION_THROWN
+						);
+						assert.equal(frame.length, 1);
+						return response;
+					})
+			]);
+		});
 	});
 
 });
