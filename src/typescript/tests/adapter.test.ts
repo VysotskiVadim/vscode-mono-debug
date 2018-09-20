@@ -129,6 +129,12 @@ suite('Xamarin Debug Adapter', () => {
 					})
 			]);
 		});
+
+		test('run without package', 
+			() => dc.launch({ intent: 'wrong intent'})
+				.then(launchRespose => assert.fail())
+				.catch(e => {})
+		);
 	});
 
 });
