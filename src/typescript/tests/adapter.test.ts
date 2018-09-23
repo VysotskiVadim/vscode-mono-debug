@@ -14,7 +14,7 @@ suite('Xamarin Debug Adapter', () => {
 
 	const PROJECT_ROOT = Path.join(__dirname, '../../');
 	const DATA_ROOT = Path.join(PROJECT_ROOT, 'testdata/');
-	const DEBUG_ADAPTER = Path.join(PROJECT_ROOT, 'bin/Release/mono-debug.exe');
+	const DEBUG_ADAPTER = Path.join(PROJECT_ROOT, 'bin/Release/xamarin-debug.exe');
 
 	let dc: DebugClient;
 
