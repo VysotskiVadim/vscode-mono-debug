@@ -14,7 +14,7 @@ In order to debug Xamarin.Android appliction you need to install it on device. U
 msbuild droid.csproj /p:Configuration=Debug /t:Install
 ```
 
-After install setup debugger like in example:
+After install setup debugger like in [example](https://github.com/VysotskiVadim/Xamarin.Debug.Example):
 ```json
 {
   "name": "Debug android",
