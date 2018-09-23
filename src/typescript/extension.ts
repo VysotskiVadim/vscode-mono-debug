@@ -10,11 +10,11 @@ import { DebugProtocol } from 'vscode-debugprotocol';
 
 const localize = nls.config(process.env.VSCODE_NLS_CONFIG)();
 
-const configuration = vscode.workspace.getConfiguration('mono-debug');
+const configuration = vscode.workspace.getConfiguration('xamarin-debug');
 
 export function activate(context: vscode.ExtensionContext) {
-	context.subscriptions.push(vscode.commands.registerCommand('extension.mono-debug.configureExceptions', () => configureExceptions()));
-	context.subscriptions.push(vscode.commands.registerCommand('extension.mono-debug.startSession', config => startSession(config)));
+	context.subscriptions.push(vscode.commands.registerCommand('extension.xamarin-debug.configureExceptions', () => configureExceptions()));
+	context.subscriptions.push(vscode.commands.registerCommand('extension.xamarin-debug.startSession', config => startSession(config)));
 }
 
 export function deactivate() {

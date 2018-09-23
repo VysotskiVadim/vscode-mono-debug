@@ -19,7 +19,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
-    <AssemblyName>mono-debug</AssemblyName>
+    <AssemblyName>xamarin-debug</AssemblyName>
     <Commandlineparameters>--server=4711</Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -28,7 +28,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
-    <AssemblyName>mono-debug</AssemblyName>
+    <AssemblyName>xamarin-debug</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

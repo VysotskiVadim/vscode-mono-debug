@@ -54,7 +54,6 @@
 		"onCommand:extension.mono-debug.startSession"
 	],
 	"contributes": {
-
 		"configuration": {
 			"type": "object",
 			"title": "%configuration.title%",
@@ -63,7 +62,11 @@
 					"type": "object",
 					"additionalProperties": {
 						"type": "string",
-						"enum": [ "never", "always", "unhandled" ],
+						"enum": [
+							"never",
+							"always",
+							"unhandled"
+						],
 						"enumDescriptions": [
 							"%breakMode.never%",
 							"%breakMode.always%",
@@ -90,10 +93,9 @@
 				}
 			}
 		},
-
 		"commands": [
 			{
-				"command": "extension.mono-debug.configureExceptions",
+				"command": "extension.xamarin-debug.configureExceptions",
 				"title": "%configure.exceptions.command%",
 				"category": "Debug"
 			}
@@ -106,44 +108,44 @@
 				"language": "fsharp"
 			}
 		],
-		"debuggers": [{
-			"type": "Xamarin",
-			"label": "Xamarin",
-			"program": "./bin/Release/mono-debug.exe",
-			"osx": {
-				"runtime": "mono"
-			},
-			"linux": {
-				"runtime": "mono"
-			},
-			"aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
-
-			"startSessionCommand": "extension.mono-debug.startSession",
-
-			"initialConfigurations": [
-				{
-					"name": "%mono.launch.config.name%",
-					"type": "xamarin",
-					"request": "launch",
-					"package": "com.your.app.package",
-					"intent": ""
-				}
-			],
-			"configurationAttributes": {
-				"launch": {
-					"required": [],
-					"properties": {
-						"package":{
-							"type": "string",
-							"description": "%mono.launch.package.description%"
-						},
-						"intent":{
-							"type": "string",
-							"description": "%mono.launch.intent.description%"
+		"debuggers": [
+			{
+				"type": "xamarin",
+				"label": "Xamarin",
+				"program": "./bin/Release/xamarin-debug.exe",
+				"osx": {
+					"runtime": "mono"
+				},
+				"linux": {
+					"runtime": "mono"
+				},
+				"aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
+				"startSessionCommand": "extension.xamarin-debug.startSession",
+				"initialConfigurations": [
+					{
+						"name": "%mono.launch.config.name%",
+						"type": "xamarin",
+						"request": "launch",
+						"package": "com.your.app.package",
+						"intent": ""
+					}
+				],
+				"configurationAttributes": {
+					"launch": {
+						"required": [],
+						"properties": {
+							"packageName": {
+								"type": "string",
+								"description": "%mono.launch.package.description%"
+							},
+							"intent": {
+								"type": "string",
+								"description": "%mono.launch.intent.description%"
+							}
 						}
 					}
 				}
 			}
-		}]
+		]
 	}
 }

@@ -1,9 +1,9 @@
 {
-	"mono.label": "C# Mono",
+	"mono.label": "Xamain",
 
 	"configure.exceptions.command": "Configure Exceptions",
 
-	"configuration.title": "Mono Debug",
+	"configuration.title": "Xamain Debug",
 	"configuration.exceptionOptions.description": "Configure when exceptions should break (never, always, unhandled). Add more as needed.",
 	"configuration.exceptionOptions.description2": "When should this thrown exception break?",
 

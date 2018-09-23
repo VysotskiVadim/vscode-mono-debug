@@ -20,7 +20,7 @@ After install setup debugger like in example:
   "name": "Debug android",
   "type": "xamarin",
   "request": "launch",
-  "package": "com.xamarin.debugexample.x_a_debug"
+  "packageName": "com.xamarin.debugexample.x_a_debug"
 }
 
 ```
