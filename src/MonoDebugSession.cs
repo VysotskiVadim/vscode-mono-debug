@@ -642,7 +642,7 @@ namespace VSCodeDebug
 					lin2.Add(bpt.Item2);
 				}
 				else {
-					// Program.Log("cleared bpt #{0} for line {1}", bpt.Item1, bpt.Item2);
+					Program.Log("cleared bpt #{0} for line {1}", bpt.Item1, bpt.Item2);
 
 					BreakEvent b;
 					if (_breakpoints.TryGetValue(bpt.Item1, out b)) {
@@ -657,7 +657,7 @@ namespace VSCodeDebug
 				if (!lin2.Contains(l)) {
 					var id = _nextBreakpointId++;
 					_breakpoints.Add(id, _session.Breakpoints.Add(path, l));
-					// Program.Log("added bpt #{0} for line {1}", id, l);
+					Program.Log("added bpt #{0} for line {1}", id, l);
 				}
 			}
 

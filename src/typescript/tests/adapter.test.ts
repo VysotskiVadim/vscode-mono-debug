@@ -142,6 +142,14 @@ suite('Xamarin Debug Adapter', () => {
 				.catch(e => {})
 		);
 
+		test('break point in lambda', () => {
+			const LAMBDA_FUNCTION_LAST_LINE = 11;
+			const SOURCE = Path.join(XAMARIN_ANDROID_TEST_ROOT, 'Lambda.cs');
+			return dc
+				.hitBreakpoint({ packageName: PACKAGE }, { path: SOURCE, line: LAMBDA_FUNCTION_LAST_LINE } );
+				
+		});
+
 	});
 
 });

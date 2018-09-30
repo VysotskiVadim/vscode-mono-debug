@@ -16,6 +16,7 @@ namespace X.A.Debug
             if (Intent != null && Intent.GetBooleanExtra("unhandled_exception", false)) {
                 UnhandledException.throwUnhandledException();
             }
+            Lambda.LabdaFlow();
         }
     }
 }
