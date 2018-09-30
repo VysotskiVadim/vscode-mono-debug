@@ -50,8 +50,8 @@
 	},
 	"main": "./out/extension",
 	"activationEvents": [
-		"onCommand:extension.mono-debug.configureExceptions",
-		"onCommand:extension.mono-debug.startSession"
+		"onCommand:extension.xamarin-debug.configureExceptions",
+		"onCommand:extension.xamarin-debug.startSession"
 	],
 	"contributes": {
 		"configuration": {
