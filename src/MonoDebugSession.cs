@@ -657,7 +657,7 @@ namespace VSCodeDebug
 				if (!lin2.Contains(l)) {
 					var id = _nextBreakpointId++;
 					_breakpoints.Add(id, _session.Breakpoints.Add(path, l));
-					Program.Log("added bpt #{0} for line {1}", id, l);
+					Program.Log("added bpt #{0} for {1}:{2}", id, path, l);
 				}
 			}
 
