@@ -4,6 +4,12 @@ A simple VS Code debugger extension for the Xamarin. It's forked [Mono Debug](ht
 
 ![Xamaring Debug](images/xamarin-debug.png)
 
+# Help wanted
+
+Xamarin debug is young extension, so it's a lot of things to do, and it's also important to undertand what should be done to improve extention. 
+
+__We need your feedback__. If you found a bug, something doens't work, or setup process isn't clear enought for your, or if you just have thoughts how to improve: do not hesitate to create an issue.
+
 # Limitaion
 
 Xamarin Debug supports only debuggin of Xamarin.Android projectes on MacOs or Ubuntu(probaly it should work on other linux distros, but nobody tested it).
