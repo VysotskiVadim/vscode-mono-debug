@@ -38,4 +38,4 @@ before_script:
 
 script:
   - make build
-  - npm test
+  - make test

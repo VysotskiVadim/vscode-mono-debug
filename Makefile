@@ -26,7 +26,8 @@ $MONO_DEBUG_DEBUG:
 	msbuild /p:Configuration=Debug mono-debug.sln
 
 tests:
-	cd testdata/xamarin_android; make
+	make -c testdata/xamarin_android
+	mocha --timeout 60000 -u tdd ./out/tests
 
 clean:
 	git clean -xfd

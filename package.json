@@ -18,7 +18,6 @@
 		"vscode:prepublish": "make build",
 		"compile": "make build",
 		"watch": "tsc -w -p ./src/typescript",
-		"test": "make tests; mocha --timeout 60000 -u tdd ./out/tests",
 		"postinstall": "node ./node_modules/vscode/bin/install"
 	},
 	"engines": {
