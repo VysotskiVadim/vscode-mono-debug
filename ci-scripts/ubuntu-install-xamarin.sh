@@ -9,7 +9,7 @@ sudo apt-get install -y oracle-java8-installer
 echo "update-java-alternatives -l: "
 update-java-alternatives -l
 echo "update-java-alternatives -s java-8-oracle: "
-update-java-alternatives -s java-8-oracle
+sudo update-java-alternatives -s java-8-oracle
 echo "java -version: "
 java -version
 
