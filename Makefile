@@ -26,7 +26,8 @@ $MONO_DEBUG_DEBUG:
 	msbuild /p:Configuration=Debug mono-debug.sln
 
 tests:
-	cd testdata/xamarin_android; make
+	make -C ./testdata/xamarin_android
+	npm test
 
 clean:
 	git clean -xfd
