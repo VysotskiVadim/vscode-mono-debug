@@ -27,7 +27,7 @@ $MONO_DEBUG_DEBUG:
 
 tests:
 	make -C ./testdata/xamarin_android
-	mocha --timeout 60000 -u tdd ./out/tests
+	npm test
 
 clean:
 	git clean -xfd
