@@ -8,8 +8,9 @@ sudo apt-get install -y oracle-java8-installer
 #sudo apt-get install oracle-java8-set-default
 echo "update-java-alternatives -l: "
 update-java-alternatives -l
-echo "update-java-alternatives -s java-8-oracle: "
-sudo update-java-alternatives -s java-8-oracle
+#echo "update-java-alternatives -s java-8-oracle: "
+#sudo update-java-alternatives -s java-8-oracle
+export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 echo "java -version: "
 java -version
 
